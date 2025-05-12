@@ -17,7 +17,6 @@ void my_handler(int signum)
         else
         {
             printf("\n");
-            // kill(pid,SIGKILL);
         }
     }
     else if (signum == SIGTSTP)
@@ -32,18 +31,10 @@ void my_handler(int signum)
         else
         {
             printf("\n", pid);
-            // kill(pid, SIGCONT);
-            // kill(pid,SIGSTOP);
         }
     }
 }
-// void my_handler2(int signum)
-// {
-//     if(signum==SIGTSTP)
-//     {
-//         printf("Signal Stopped\n");
-//     }
-// }
+
 void scan_input(char *prompt, char *input_string)
 {
     extract_external_commands(ext_cmd);
@@ -60,7 +51,7 @@ void scan_input(char *prompt, char *input_string)
         {
             if (strncmp(input_string, "PS1=", 4) != 0)
             {
-                printf("Ok\n");
+                printf("%s: Command not found...\n",input_string);
             }
             else
             {
@@ -159,7 +150,6 @@ int check_command_type(char *cmd, char *input_str)
                     printf("Parent: Child ended abnormally\n");
                 }
                 pid = 1;
-                // printf("Child finished executing\n");
             }
         }
     }
