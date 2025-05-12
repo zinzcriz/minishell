@@ -103,16 +103,15 @@ int check_command_type(char *cmd, char *input_str)
     strcpy(input_str_backup, input_str);
     if (isbuiltin(cmd))
     {
-        printf("Command is Builtin\n");
+        //printf("Command is Builtin\n");
         execute_internal_commands(input_str);
     }
     else if (isexternal_command(ext_cmd, cmd))
     {
-        printf("External command\n");
-        // char input[] = "hello world example";
+        //printf("External command\n");
         if (strstr(input_str, "|") != NULL)
         {
-            printf("This command has pipe in it\n");
+            //printf("This command has pipe in it\n");
             char **argv;
             argv = convertTo2d_execute(input_str);
             execute_pipe(argv);
@@ -166,7 +165,7 @@ int check_command_type(char *cmd, char *input_str)
     }
     else
     {
-        printf("No command\n");
+        printf("%s: Command not found...\n",cmd);
     }
 }
 

@@ -41,7 +41,6 @@ int isexternal_command(char **external_commands, char *command)
         }
         i++;
     }
-    printf("Out ext func\n");
     return 0;
 }
 
