@@ -1,4 +1,6 @@
 #include "msh.h"
+
+//function to insert pid data and input string to linked list
 int insert_at_last(Slist **head, pid_t data, char *inp_str)
 {
     Slist *new = malloc(sizeof(Slist));
@@ -21,6 +23,7 @@ int insert_at_last(Slist **head, pid_t data, char *inp_str)
     return SUCCESS;
 }
 
+//Function to print the linked list or jobs 
 void print_list(Slist *head)
 {
     if (head == NULL)
@@ -41,6 +44,7 @@ void print_list(Slist *head)
     }
 }
 
+//Delete the last element of list
 int sl_delete_last(Slist **head)
 {
     if (*head == NULL)
@@ -65,6 +69,7 @@ int sl_delete_last(Slist **head)
     return SUCCESS;
 }
 
+//Function to return last element of list
 pid_t return_last(Slist *head)
 {
     if (head == NULL)

@@ -1,15 +1,17 @@
 #include "msh.h"
 char *ext_cmd[200];
 int pid_status = 1;
+
+//Globally declaring pid
 pid_t pid = 1;
 char prompt_backup[20] = "minishell$";
 int jobs_count = 0;
-Slist *head = NULL;
-void my_handler(int signum)
+Slist *head = NULL; //Declaring slist globally
+void my_handler(int signum)   //Signal handler function
 {
     if (signum == SIGINT)
     {
-        if (pid == 1)
+        if (pid == 1) //only works for parent
         {
             printf("\n%s", prompt_backup);
             fflush(stdout);
@@ -22,7 +24,7 @@ void my_handler(int signum)
     else if (signum == SIGTSTP)
     {
         // if(pid!=0)
-        if (pid == 1)
+        if (pid == 1) //only works for parent
         {
             printf("\n%s", prompt_backup);
             // printf("%d\n",pid);
@@ -38,7 +40,7 @@ void my_handler(int signum)
 void scan_input(char *prompt, char *input_string)
 {
     extract_external_commands(ext_cmd);
-    signal(SIGINT, my_handler);
+    signal(SIGINT, my_handler);  //Registering signal
     signal(SIGTSTP, my_handler);
     while (1)
     {
@@ -65,8 +67,8 @@ void scan_input(char *prompt, char *input_string)
         {
             // char *cmd=get_command(input_string);
             // printf("%s\n",cmd);
-            char *commd = get_command(input_string);
-            check_command_type(commd, input_string);
+            char *commd = get_command(input_string);  //Returns the first word of command
+            check_command_type(commd, input_string);  //Checks type of command
         }
     }
 }
@@ -90,7 +92,7 @@ char *get_command(char *input_string)
 
 int check_command_type(char *cmd, char *input_str)
 {
-    char input_str_backup[100];
+    char input_str_backup[100]; //Backup for input string since it is modified
     strcpy(input_str_backup, input_str);
     if (isbuiltin(cmd))
     {
@@ -110,13 +112,13 @@ int check_command_type(char *cmd, char *input_str)
         else
         {
             char **argv;
-            argv = convertTo2d_execute(input_str);
+            argv = convertTo2d_execute(input_str); //convert input string into 2d array
             pid = fork();
 
             if (pid == 0)
             {
                 // Child process
-                signal(SIGINT, SIG_DFL);
+                signal(SIGINT, SIG_DFL); //Changing signal bahaviour into default for child
                 signal(SIGTSTP, SIG_DFL);
                 execvp(argv[0], argv);
                 perror("execvp failed");
@@ -137,9 +139,10 @@ int check_command_type(char *cmd, char *input_str)
                 else if (WIFSTOPPED(status))
                 {
                     //printf("Child was stopped by signal %d\n", WSTOPSIG(status));
-                    if (insert_at_last(&head, pid, input_str_backup) == SUCCESS)
+                    if (insert_at_last(&head, pid, input_str_backup) == SUCCESS) 
                     {
-                        jobs_count++;
+                        //Calling insert function to make linked list containing info about all stopped jobs
+                        jobs_count++; //Increasing jobs count
                         printf("[%d]+\tStopped", jobs_count);
                         printf("\t\t\t");
                         printf("%s\n", input_str_backup);
@@ -149,7 +152,7 @@ int check_command_type(char *cmd, char *input_str)
                 {
                     printf("Parent: Child ended abnormally\n");
                 }
-                pid = 1;
+                pid = 1; //Changes pid value to 1 again
             }
         }
     }
@@ -159,6 +162,7 @@ int check_command_type(char *cmd, char *input_str)
     }
 }
 
+//Function for checking command is builtin
 int isbuiltin(char *command)
 {
     char *builtins[] = {"echo", "printf", "read", "cd", "pwd", "pushd", "popd", "dirs", "let", "eval",
